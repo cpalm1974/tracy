@@ -37,7 +37,7 @@ class Debugger
 		LOGGER = 'Logger';
 	
 	/** @var bool in production mode is suppressed any debugging output */
-	public static $productionMode = static::DETECT;
+	public static $productionMode = self::DETECT;
 
 	/** @var bool whether to display debug bar in development mode */
 	public static $showBar = true;
