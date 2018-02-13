@@ -43,13 +43,13 @@ class Debugger
 	public static $showBar = true;
 
 	/** @var bool */
-	private static $enabled = false;
+	protected static $enabled = false;
 
 	/** @var string reserved memory; also prevents double rendering */
-	private static $reserved;
+	protected static $reserved;
 
 	/** @var int initial output buffer level */
-	private static $obLevel;
+	protected static $obLevel;
 
 	/********************* errors and exceptions reporting ****************d*g**/
 
