@@ -78,7 +78,7 @@ class BlueScreen
 	 */
 	public function renderToFile($exception, $file)
 	{
-		if ($handle = @fopen($file, 'x')) {
+		if (!file_exists($file) && $handle = @fopen($file, 'x')) {
 			ob_start(); // double buffer prevents sending HTTP headers in some PHP
 			ob_start(function ($buffer) use ($handle) { fwrite($handle, $buffer); }, 4096);
 			$this->renderTemplate($exception, __DIR__ . '/assets/BlueScreen/page.phtml');
