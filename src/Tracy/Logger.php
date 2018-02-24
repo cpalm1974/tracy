@@ -134,6 +134,17 @@ class Logger implements ILogger
     }
     
     /**
+     * Generates a fresh filename for an exception hash.
+     * @param string $hash
+     */
+    protected function generateNewExceptionFile($hash) {
+        return 'exception--' . @date('Y-m-d--H-i') . "--$hash.html"; // @ timezone may not be set
+    }
+    
+    /**
+     * Looks into the specified log directory if an existing exception file according to the
+     * exception hash is already present and returns that one. Otherwise a filename with the
+     * current timestamp is generated.
      * @param  \Exception|\Throwable
      * @return string
      */
@@ -146,7 +157,7 @@ class Logger implements ILogger
                 return $dir . $file;
             }
         }
-        return $dir . 'exception--' . @date('Y-m-d--H-i') . "--$hash.html"; // @ timezone may not be set
+        return $dir . $this->generateNewExceptionFile($hash);
     }
     
     
