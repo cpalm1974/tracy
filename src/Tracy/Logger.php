@@ -117,26 +117,47 @@ class Logger implements ILogger
 
 
 	/**
+	 * Calculates a hash value for the exception as a string and returns it
+	 * @param  \Exception|\Throwable
+	 * @return string
+	 */
+	public function getExceptionHash($exception)
+	{
+	    while ($exception) {
+	        $data[] = [
+	            get_class($exception), $exception->getMessage(), $exception->getCode(), $exception->getFile(), $exception->getLine(),
+	            array_map(function ($item) { unset($item['args']); return $item; }, $exception->getTrace()),
+	            ];
+	        $exception = $exception->getPrevious();
+	    }
+	    return substr(md5(serialize($data)), 0, 10);
+	}
+
+    /**
+     * Generates a fresh filename for an exception hash.
+     * @param string $hash
+     */
+	protected function generateNewExceptionFile($hash) {
+	    return 'exception--' . @date('Y-m-d--H-i') . "--$hash.html"; // @ timezone may not be set
+	}
+	
+	/**
+	 * Looks into the specified log directory if an existing exception file according to the 
+	 * exception hash is already present and returns that one. Otherwise a filename with the
+	 * current timestamp is generated.
 	 * @param  \Exception|\Throwable
 	 * @return string
 	 */
 	public function getExceptionFile($exception)
 	{
-		while ($exception) {
-			$data[] = [
-				get_class($exception), $exception->getMessage(), $exception->getCode(), $exception->getFile(), $exception->getLine(),
-				array_map(function ($item) { unset($item['args']); return $item; }, $exception->getTrace()),
-			];
-			$exception = $exception->getPrevious();
-		}
-		$hash = substr(md5(serialize($data)), 0, 10);
+		$hash = $this->getExceptionHash($exception);
 		$dir = strtr($this->directory . '/', '\\/', DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR);
 		foreach (new \DirectoryIterator($this->directory) as $file) {
 			if (strpos($file->getBasename(), $hash)) {
 				return $dir . $file;
 			}
 		}
-		return $dir . 'exception--' . @date('Y-m-d--H-i') . "--$hash.html"; // @ timezone may not be set
+		return $dir . $this->generateNewExceptionFile($hash);
 	}
 
 
