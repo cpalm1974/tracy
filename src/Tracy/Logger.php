@@ -121,7 +121,7 @@ class Logger implements ILogger
 	 * @param  \Exception|\Throwable
 	 * @return string
 	 */
-	public function getExceptionHash($exception)
+	public static function getExceptionHash($exception)
 	{
 	    while ($exception) {
 	        $data[] = [
@@ -137,7 +137,7 @@ class Logger implements ILogger
      * Generates a fresh filename for an exception hash.
      * @param string $hash
      */
-	protected function generateNewExceptionFile($hash) {
+	protected static function generateNewExceptionFile($hash) {
 	    return 'exception--' . @date('Y-m-d--H-i') . "--$hash.html"; // @ timezone may not be set
 	}
 	
@@ -146,18 +146,18 @@ class Logger implements ILogger
 	 * exception hash is already present and returns that one. Otherwise a filename with the
 	 * current timestamp is generated.
 	 * @param  \Exception|\Throwable
-	 * @return string
+	 * @return string found or generated filename
 	 */
 	public function getExceptionFile($exception)
 	{
-		$hash = $this->getExceptionHash($exception);
+		$hash = static::getExceptionHash($exception);
 		$dir = strtr($this->directory . '/', '\\/', DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR);
 		foreach (new \DirectoryIterator($this->directory) as $file) {
 			if (strpos($file->getBasename(), $hash)) {
 				return $dir . $file;
 			}
 		}
-		return $dir . $this->generateNewExceptionFile($hash);
+		return $dir . static::generateNewExceptionFilename($hash);
 	}
 
 

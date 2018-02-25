@@ -74,7 +74,7 @@ class BlueScreen
 	 * Renders blue screen to file (if file exists, it will not be overwritten).
 	 * @param  \Exception|\Throwable
 	 * @param  string file path
-	 * @return void
+	 * @return bool indicates that the file has been written
 	 */
 	public function renderToFile($exception, $file)
 	{
@@ -85,7 +85,11 @@ class BlueScreen
 			ob_end_flush();
 			ob_end_clean();
 			fclose($handle);
+		} else {
+		    return false;
 		}
+		
+		return true;
 	}
 
 
