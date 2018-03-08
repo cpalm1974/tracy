@@ -137,7 +137,7 @@ class Logger implements ILogger
      * Generates a fresh filename for an exception hash.
      * @param string $hash
      */
-	protected static function generateNewExceptionFile($hash) {
+	protected static function generateNewExceptionFilename($hash) {
 	    return 'exception--' . @date('Y-m-d--H-i') . "--$hash.html"; // @ timezone may not be set
 	}
 	
